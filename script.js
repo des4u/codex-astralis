@@ -37,7 +37,7 @@ let wikiData = {
 // Credenciales de acceso
 const ADMIN_CREDENTIALS = {
     username: "DesauOf",
-    password: "KRkitty150615"
+    password: "06.23.08"
 };
 
 // --- NUEVO: Guardar y cargar desde un JSON en localStorage o archivo externo ---
