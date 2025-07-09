@@ -51,7 +51,7 @@ document.addEventListener('wikiDataLoaded', function() {
     const downloadJsonBtn = document.getElementById('download-json-btn');
     const saveContentBtn = document.getElementById('save-content');
     const cancelEditBtn = document.getElementById('cancel-edit');
-    const addNewContent = document.getElementById('add-content-btn');
+    const addContentBtn = document.getElementById('add-content-btn'); // CORREGIDO: Variable correcta
 
     // Variables para edición
     let currentEditingItem = null;
@@ -81,7 +81,7 @@ document.addEventListener('wikiDataLoaded', function() {
         downloadJsonBtn.addEventListener('click', downloadPureJson);
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
-        addNewContent.addEventListener('click', addNewContent);
+        addContentBtn.addEventListener('click', addNewContent); // CORREGIDO: Event listener correcto
         
         // Cerrar modales al hacer clic fuera
         window.addEventListener('click', (e) => {
@@ -195,7 +195,7 @@ document.addEventListener('wikiDataLoaded', function() {
                 contentDiv.className = 'content-item';
                 contentDiv.id = item.id;
                 
-                // CORREGIDO: Aplicar alineación correctamente
+                // Aplicar alineación correctamente
                 contentDiv.style.textAlign = item.alignment || 'left';
                 
                 if (isAuthenticated) {
@@ -278,18 +278,33 @@ document.addEventListener('wikiDataLoaded', function() {
             alignment: 'left'
         };
         
-        // Agregar al contenido actual
+        // Encontrar la página actual
         const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        if (!currentPage) {
+            alert('No se encontró la página actual');
+            return;
+        }
+        
+        // Agregar al contenido actual
         if (tempData.currentSubpage) {
             const currentSubpage = currentPage.subpages.find(sub => sub.id === tempData.currentSubpage);
-            if (!currentSubpage.content) currentSubpage.content = [];
-            currentSubpage.content.push(newItem);
+            if (currentSubpage) {
+                if (!currentSubpage.content) currentSubpage.content = [];
+                currentSubpage.content.push(newItem);
+            } else {
+                alert('No se encontró la subpágina actual');
+                return;
+            }
         } else {
             if (!currentPage.content) currentPage.content = [];
             currentPage.content.push(newItem);
         }
         
+        // Abrir el editor para el nuevo contenido
         editContent(newItem);
+        
+        // Re-renderizar para mostrar el nuevo contenido
+        renderCurrentPage();
     }
 
     function saveContent() {
@@ -385,7 +400,6 @@ Para hacer los cambios permanentes:
         }
     }
 
-    // CORREGIDO: Función downloadPureJson funciona correctamente
     function downloadPureJson() {
         const dataStr = JSON.stringify(tempData, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
