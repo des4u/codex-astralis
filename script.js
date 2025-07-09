@@ -51,6 +51,7 @@ document.addEventListener('wikiDataLoaded', function() {
     const downloadJsonBtn = document.getElementById('download-json-btn');
     const saveContentBtn = document.getElementById('save-content');
     const cancelEditBtn = document.getElementById('cancel-edit');
+    const addNewContent = document.getElementById('add-content-btn');
 
     // Variables para edición
     let currentEditingItem = null;
@@ -80,6 +81,7 @@ document.addEventListener('wikiDataLoaded', function() {
         downloadJsonBtn.addEventListener('click', downloadPureJson);
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
+        addNewContent.addEventListener('click', addNewContent);
         
         // Cerrar modales al hacer clic fuera
         window.addEventListener('click', (e) => {
