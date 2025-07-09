@@ -1,4 +1,4 @@
-// Codex Astralis - Script Principal
+// Codex Astralis - Script Principal (CORREGIDO)
 
 // Configuración de credenciales de editor
 const editorCredentials = {
@@ -24,6 +24,7 @@ async function startApp() {
         alert('Error cargando datos: ' + e.message);
         defaultData = { pages: [], currentPage: null, currentSubpage: null };
         tempData = JSON.parse(JSON.stringify(defaultData));
+        document.dispatchEvent(new Event('wikiDataLoaded'));
     }
 }
 
@@ -50,14 +51,6 @@ document.addEventListener('wikiDataLoaded', function() {
     const downloadJsonBtn = document.getElementById('download-json-btn');
     const saveContentBtn = document.getElementById('save-content');
     const cancelEditBtn = document.getElementById('cancel-edit');
-    
-    // Botón para descargar JSON puro
-    // const downloadPureJsonBtn = document.createElement('button');
-    // downloadPureJsonBtn.id = 'download-pure-json-btn';
-    // downloadPureJsonBtn.className = 'btn btn-info';
-    // downloadPureJsonBtn.textContent = 'Descargar JSON puro';
-    // downloadPureJsonBtn.style.marginLeft = '10px';
-    // downloadJsonBtn.parentNode.insertBefore(downloadPureJsonBtn, downloadJsonBtn.nextSibling);
 
     // Variables para edición
     let currentEditingItem = null;
@@ -84,8 +77,7 @@ document.addEventListener('wikiDataLoaded', function() {
         addPageBtn.addEventListener('click', addNewPage);
         addSubpageBtn.addEventListener('click', addNewSubpage);
         saveChangesBtn.addEventListener('click', saveChanges);
-        downloadJsonBtn.addEventListener('click', downloadPureJson); // Cambiado para descargar JSON puro
-        // downloadPureJsonBtn.addEventListener('click', downloadJson); // Ahora este descarga el JS
+        downloadJsonBtn.addEventListener('click', downloadPureJson);
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
         
@@ -107,7 +99,7 @@ document.addEventListener('wikiDataLoaded', function() {
             loginBtn.style.display = 'none';
             logoutBtn.style.display = 'block';
             editorPanel.style.display = 'block';
-            renderCurrentPage(); // Re-renderizar para mostrar botones de edición
+            renderCurrentPage();
             
             // Limpiar formulario
             document.getElementById('username').value = '';
@@ -200,11 +192,10 @@ document.addEventListener('wikiDataLoaded', function() {
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'content-item';
                 contentDiv.id = item.id;
-                // Corregir alineación
-                contentDiv.classList.remove('text-left', 'text-center', 'text-right');
-                if (item.alignment) {
-                    contentDiv.classList.add(`text-${item.alignment}`);
-                }
+                
+                // CORREGIDO: Aplicar alineación correctamente
+                contentDiv.style.textAlign = item.alignment || 'left';
+                
                 if (isAuthenticated) {
                     contentDiv.classList.add('editable');
                     const editBtn = document.createElement('button');
@@ -213,6 +204,7 @@ document.addEventListener('wikiDataLoaded', function() {
                     editBtn.addEventListener('click', () => editContent(item));
                     contentDiv.appendChild(editBtn);
                 }
+                
                 if (item.type === 'text') {
                     if (item.title) {
                         const titleEl = document.createElement('h3');
@@ -249,11 +241,14 @@ document.addEventListener('wikiDataLoaded', function() {
                 const addBtn = document.createElement('button');
                 addBtn.textContent = 'Agregar Contenido';
                 addBtn.className = 'btn btn-primary';
-                addBtn.addEventListener('click', addNewContent); // Corregido: referencia directa
+                addBtn.addEventListener('click', addNewContent);
                 emptyMsg.appendChild(addBtn);
             }
             pageContent.appendChild(emptyMsg);
         }
+        
+        // Agregar botones de eliminar después de renderizar
+        setTimeout(addDeleteButtons, 100);
     }
 
     function editContent(item) {
@@ -270,6 +265,7 @@ document.addEventListener('wikiDataLoaded', function() {
         contentModal.style.display = 'block';
     }
 
+    // CORREGIDO: Función addNewContent definida correctamente
     function addNewContent() {
         const newId = 'content-' + Date.now();
         const newItem = {
@@ -299,16 +295,20 @@ document.addEventListener('wikiDataLoaded', function() {
         const text = document.getElementById('content-text').value;
         const alignment = document.getElementById('content-alignment').value;
         const embedCode = document.getElementById('embed-code').value.trim();
+        
         if (!title && !text && !embedCode) {
             alert('Debe agregar al menos un título, texto o código embed');
             return;
         }
+        
         // Determinar el tipo de contenido
         const contentType = embedCode ? 'embed' : 'text';
+        
         // Actualizar el item
         currentEditingItem.type = contentType;
         currentEditingItem.title = title;
-        currentEditingItem.alignment = alignment; // Corregido: guardar alineación siempre
+        currentEditingItem.alignment = alignment;
+        
         if (contentType === 'embed') {
             currentEditingItem.embedCode = embedCode;
             currentEditingItem.text = '';
@@ -316,9 +316,11 @@ document.addEventListener('wikiDataLoaded', function() {
             currentEditingItem.text = text;
             currentEditingItem.embedCode = '';
         }
+        
         // Cerrar modal y re-renderizar
         contentModal.style.display = 'none';
         renderCurrentPage();
+        
         // Limpiar variables
         currentEditingItem = null;
         currentEditingPage = null;
@@ -367,50 +369,21 @@ document.addEventListener('wikiDataLoaded', function() {
     }
 
     function saveChanges() {
-        // Mostrar mensaje de confirmación
         const confirmMsg = `Los cambios se han guardado temporalmente. 
         
 Para hacer los cambios permanentes:
 1. Haz clic en "Descargar JSON"
-2. Reemplaza el contenido del archivo data.js con los nuevos datos
+2. Reemplaza el contenido del archivo wikiData.json con los nuevos datos
 3. Sube los cambios a GitHub
         
 ¿Deseas descargar el JSON ahora?`;
         
         if (confirm(confirmMsg)) {
-            downloadJson();
+            downloadPureJson();
         }
     }
 
-    function downloadJson() {
-        const dataStr = `// Codex Astralis - Datos actualizados
-const defaultData = ${JSON.stringify(tempData, null, 2)};
-
-// Credenciales de editor
-const editorCredentials = {
-    username: 'Editor',
-    password: '06.23.08'
-};
-
-// Variable para almacenar datos temporales
-let tempData = JSON.parse(JSON.stringify(defaultData));
-
-// Variable para el estado de autenticación
-let isAuthenticated = false;`;
-        
-        const blob = new Blob([dataStr], { type: 'application/javascript' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'data.js';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        alert('Archivo data.js descargado. Reemplaza el archivo existente para hacer los cambios permanentes.');
-    }
-
+    // CORREGIDO: Función downloadPureJson funciona correctamente
     function downloadPureJson() {
         const dataStr = JSON.stringify(tempData, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
@@ -425,7 +398,7 @@ let isAuthenticated = false;`;
         alert('Archivo wikiData.json descargado. Reemplaza el archivo en el repositorio para aplicar los cambios.');
     }
 
-    // Función para eliminar contenido (bonus)
+    // Función para eliminar contenido
     function deleteContent(itemId) {
         if (!confirm('¿Está seguro de que desea eliminar este contenido?')) return;
         
@@ -441,7 +414,7 @@ let isAuthenticated = false;`;
         renderCurrentPage();
     }
 
-    // Función para eliminar página (bonus)
+    // Función para eliminar página
     function deletePage(pageId) {
         if (!confirm('¿Está seguro de que desea eliminar esta página?')) return;
         
@@ -456,7 +429,7 @@ let isAuthenticated = false;`;
         renderCurrentPage();
     }
 
-    // Función para eliminar subpágina (bonus)
+    // Función para eliminar subpágina
     function deleteSubpage(subpageId) {
         if (!confirm('¿Está seguro de que desea eliminar esta subpágina?')) return;
         
@@ -493,6 +466,7 @@ let isAuthenticated = false;`;
                     font-size: 14px;
                     opacity: 0;
                     transition: opacity 0.3s ease;
+                    z-index: 10;
                 `;
                 deleteBtn.addEventListener('click', () => deleteContent(item.id));
                 item.appendChild(deleteBtn);
@@ -503,13 +477,6 @@ let isAuthenticated = false;`;
             }
         });
     }
-
-    // Modificar renderCurrentPage para incluir botones de eliminar
-    const originalRenderCurrentPage = renderCurrentPage;
-    renderCurrentPage = function() {
-        originalRenderCurrentPage();
-        setTimeout(addDeleteButtons, 100);
-    };
 
     // Atajos de teclado para editores
     document.addEventListener('keydown', (e) => {
