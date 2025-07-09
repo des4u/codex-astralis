@@ -84,8 +84,8 @@ document.addEventListener('wikiDataLoaded', function() {
         addPageBtn.addEventListener('click', addNewPage);
         addSubpageBtn.addEventListener('click', addNewSubpage);
         saveChangesBtn.addEventListener('click', saveChanges);
-        downloadJsonBtn.addEventListener('click', downloadJson);
-        downloadPureJsonBtn.addEventListener('click', downloadPureJson);
+        downloadJsonBtn.addEventListener('click', downloadPureJson); // Cambiado para descargar JSON puro
+        downloadPureJsonBtn.addEventListener('click', downloadJson); // Ahora este descarga el JS
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
         
