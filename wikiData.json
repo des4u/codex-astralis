@@ -21,8 +21,23 @@
         }
       ],
       "subpages": []
+    },
+    {
+      "id": "page-1752091720691",
+      "title": "Guias",
+      "content": [
+        {
+          "id": "content-1752091724955",
+          "type": "embed",
+          "title": "Explicacion",
+          "text": "",
+          "alignment": "center",
+          "embedCode": "<div style=\"background-color: #0d0d0d; color: #f0f0f0; padding: 25px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: auto; box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);\">\n  <h2 style=\"color: #00ffff; text-align: center; margin-bottom: 10px;\">📚 Guías del Servidor</h2>\n  \n  <p style=\"font-size: 1.1em; line-height: 1.6;\"><strong>¡Bienvenido a las guías oficiales de <span style=\"color:#00ff99;\">StellarMarch</span>!</strong> Aquí encontrarás toda la información que necesitas para comenzar tu viaje y dominar el universo.</p>\n\n  <hr style=\"border: 0; height: 2px; background: linear-gradient(to right, #00ffff, #00ff99); margin: 20px 0;\">\n\n  <h3 style=\"color: #00ffcc;\">📌 ¿Qué contienen las guías?</h3>\n  <ul style=\"padding-left: 20px; line-height: 1.7;\">\n    <li><strong>Introducción al juego:</strong> aprende los conceptos básicos para no perderte en tu primer aterrizaje.</li>\n    <li><strong>Sistemas y mecánicas:</strong> descubre cómo funcionan la minería, comercio, combate, y más.</li>\n    <li><strong>Creación de naciones:</strong> construye tu imperio espacial desde cero y personaliza su enfoque.</li>\n    <li><strong>Tecnología y progreso:</strong> explora las ramas de investigación y evoluciona tu civilización.</li>\n    <li><strong>Eventos y secretos:</strong> mantente al tanto de los eventos galácticos y las historias ocultas.</li>\n  </ul>\n\n  <h3 style=\"color: #00ffcc;\">🎮 ¿Por qué son importantes?</h3>\n  <p style=\"font-size: 1em; line-height: 1.6;\">\n    Estas guías no solo te ayudarán a sobrevivir en el espacio, sino que también potenciarán tu estrategia, te ahorrarán tiempo y te conectarán con el lore profundo del universo <strong>StellarMarch</strong>.\n  </p>\n\n  <h3 style=\"color: #00ffcc;\">🚀 Acceso fácil y continuo</h3>\n  <p style=\"font-size: 1em; line-height: 1.6;\">\n    Todas las guías están pensadas para que <strong>cualquier jugador</strong>, sin importar su experiencia, pueda comprenderlas sin dificultad. Puedes consultarlas en cualquier momento en nuestra <a href=\"https://stellarmarch.net\" style=\"color:#00ffff; text-decoration: underline;\">página oficial</a>.\n  </p>\n\n  <hr style=\"border: 0; height: 2px; background: linear-gradient(to right, #00ff99, #00ffff); margin: 20px 0;\">\n\n  <p style=\"text-align: center; font-style: italic; color: #cccccc;\">📖 Conocimiento es poder... ¡y en el universo StellarMarch, es tu mejor arma!</p>\n</div>"
+        }
+      ],
+      "subpages": []
     }
   ],
-  "currentPage": "main",
+  "currentPage": "page-1752091720691",
   "currentSubpage": null
 }
