@@ -1,621 +1,497 @@
-// Variables globales
-let currentSection = 'home';
-let currentPage = null;
-let editMode = false;
-let originalContent = {};
-let isLoggedIn = false;
-let wikiData = {
-    pages: {
-        home: {
-            title: "Introduccion",
-            content: null,
-            subpages: []
-        },
-        technology: {
-            title: "Tutoriales",
-            content: null,
-            subpages: []
-        },
-        exploration: {
-            title: "Mapa",
-            content: null,
-            subpages: []
-        },
-        species: {
-            title: "Historia y Lore",
-            content: null,
-            subpages: []
-        },
-        history: {
-            title: "Servidor",
-            content: null,
-            subpages: []
-        }
-    }
-};
-
-// Credenciales de acceso
-const ADMIN_CREDENTIALS = {
-    username: "DesauOf",
-    password: "06.23.08"
-};
-
-// --- NUEVO: Guardar y cargar desde un JSON en localStorage o archivo externo ---
-const STORAGE_KEY = 'codexAstralisWikiDataJSON';
-const JSON_FILE = 'wikiData.json';
-
-// Inicialización
-// Al cargar, intenta leer el JSON externo primero
+// Codex Astralis - Script Principal
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadWikiDataFromFile().then(() => {
-        updateUserInterface();
+    // Elementos del DOM
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginModal = document.getElementById('login-modal');
+    const loginForm = document.getElementById('login-form');
+    const cancelLogin = document.getElementById('cancel-login');
+    const editorPanel = document.getElementById('editor-panel');
+    const contentModal = document.getElementById('content-modal');
+    const navList = document.getElementById('nav-list');
+    const subpageNav = document.getElementById('subpage-nav');
+    const pageTitle = document.getElementById('page-title');
+    const pageContent = document.getElementById('page-content');
+    
+    // Botones del editor
+    const addPageBtn = document.getElementById('add-page-btn');
+    const addSubpageBtn = document.getElementById('add-subpage-btn');
+    const saveChangesBtn = document.getElementById('save-changes-btn');
+    const downloadJsonBtn = document.getElementById('download-json-btn');
+    const saveContentBtn = document.getElementById('save-content');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+    
+    // Variables para edición
+    let currentEditingItem = null;
+    let currentEditingPage = null;
+    let currentEditingSubpage = null;
+
+    // Inicializar la aplicación
+    init();
+
+    function init() {
+        renderNavigation();
+        renderCurrentPage();
         setupEventListeners();
-    });
-});
-
-function setupEventListeners() {
-    // Login form
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleLogin();
-    });
-    
-    // Add page form
-    document.getElementById('addPageForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleAddPage();
-    });
-    
-    // Media form
-    document.getElementById('mediaForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleAddMedia();
-    });
-    
-    // Cerrar modales al hacer clic fuera
-    window.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal')) {
-            closeAllModals();
-        }
-    });
-    // Botón exportar JSON
-    const exportBtn = document.getElementById('exportJsonBtn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', exportWikiDataAsJson);
     }
-}
 
-// Cargar datos desde archivo JSON externo (si existe)
-async function loadWikiDataFromFile() {
-    try {
-        const response = await fetch(JSON_FILE + '?_=' + Date.now()); // evitar caché
-        if (response.ok) {
-            wikiData = await response.json();
-            renderAllSectionsFromWikiData();
-            console.log('Wiki cargada desde archivo JSON:', wikiData);
-            return;
-        }
-    } catch (e) {
-        console.warn('No se pudo cargar wikiData.json, se usará localStorage o datos por defecto.');
-    }
-    // Si falla, intenta cargar desde localStorage
-    loadWikiData();
-}
-
-function showLogin() {
-    document.getElementById('loginModal').style.display = 'block';
-}
-
-function closeLogin() {
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('loginForm').reset();
-}
-
-function handleLogin() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        isLoggedIn = true;
-        updateUserInterface();
-        closeLogin();
-        showNotification('¡Sesión iniciada exitosamente!', 'success');
-    } else {
-        showNotification('Credenciales incorrectas', 'error');
-    }
-}
-
-function logout() {
-    isLoggedIn = false;
-    updateUserInterface();
-    if (editMode) {
-        cancelEdit();
-    }
-    showNotification('Sesión cerrada', 'info');
-}
-
-function updateUserInterface() {
-    const userInfo = document.getElementById('userInfo');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const editControls = document.getElementById('editControls');
-    
-    if (isLoggedIn) {
-        userInfo.textContent = 'Editor: DesauOf';
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
-        editControls.style.display = 'flex';
-    } else {
-        userInfo.textContent = 'Visitante';
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-        editControls.style.display = 'none';
-    }
-}
-
-// Funciones de navegación
-function showSection(sectionId) {
-    // Ocultar todas las secciones
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Mostrar la sección seleccionada
-    document.getElementById(sectionId).classList.add('active');
-    
-    // Actualizar botones de navegación
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    event.target.classList.add('active');
-    currentSection = sectionId;
-    currentPage = null;
-    
-    // Salir del modo edición al cambiar de sección
-    if (editMode) {
-        cancelEdit();
-    }
-    
-    // Actualizar navegación de páginas
-    updatePageNavigation();
-}
-
-function updatePageNavigation() {
-    const pageNav = document.getElementById('pageNav');
-    pageNav.innerHTML = '';
-    
-    if (wikiData.pages[currentSection] && wikiData.pages[currentSection].subpages.length > 0) {
-        wikiData.pages[currentSection].subpages.forEach(subpage => {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = 'page-btn';
-            pageBtn.textContent = subpage.title;
-            pageBtn.onclick = () => showSubpage(subpage.id);
-            pageNav.appendChild(pageBtn);
+    function setupEventListeners() {
+        // Autenticación
+        loginBtn.addEventListener('click', () => loginModal.style.display = 'block');
+        logoutBtn.addEventListener('click', logout);
+        cancelLogin.addEventListener('click', () => loginModal.style.display = 'none');
+        loginForm.addEventListener('submit', handleLogin);
+        
+        // Editor
+        addPageBtn.addEventListener('click', addNewPage);
+        addSubpageBtn.addEventListener('click', addNewSubpage);
+        saveChangesBtn.addEventListener('click', saveChanges);
+        downloadJsonBtn.addEventListener('click', downloadJson);
+        saveContentBtn.addEventListener('click', saveContent);
+        cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
+        
+        // Cerrar modales al hacer clic fuera
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) loginModal.style.display = 'none';
+            if (e.target === contentModal) contentModal.style.display = 'none';
         });
     }
-}
 
-function showSubpage(pageId) {
-    const subpage = wikiData.pages[currentSection].subpages.find(p => p.id === pageId);
-    if (!subpage) return;
-    
-    currentPage = pageId;
-    
-    // Actualizar botones de páginas
-    document.querySelectorAll('.page-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    event.target.classList.add('active');
-    
-    // Mostrar contenido de la subpágina
-    const subpageContainer = document.getElementById(currentSection + '-subpages');
-    subpageContainer.innerHTML = '';
-    
-    const subpageDiv = document.createElement('div');
-    subpageDiv.className = 'subpage active';
-    subpageDiv.innerHTML = `
-        <div class="wiki-content">
-            <div class="content-display">
-                ${subpage.content || '<h2>' + subpage.title + '</h2><p>Contenido en desarrollo...</p>'}
-            </div>
-            <div class="edit-mode">
-                <textarea class="edit-textarea" placeholder="Escribe tu contenido aquí..."></textarea>
-                <div class="media-controls">
-                    <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                    <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                    <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    subpageContainer.appendChild(subpageDiv);
-    
-    // Ocultar contenido principal de la sección
-    const mainContent = document.querySelector('#' + currentSection + ' .wiki-content');
-    mainContent.style.display = 'none';
-}
-
-// Funciones de edición
-function toggleEditMode() {
-    if (!isLoggedIn) {
-        showNotification('Debes iniciar sesión para editar', 'error');
-        return;
-    }
-    
-    editMode = !editMode;
-    
-    let currentSectionElement, displayDiv, editDiv, textarea;
-    
-    if (currentPage) {
-        // Editando una subpágina
-        currentSectionElement = document.querySelector('#' + currentSection + '-subpages .subpage.active');
-    } else {
-        // Editando contenido principal
-        currentSectionElement = document.getElementById(currentSection);
-    }
-    
-    if (!currentSectionElement) return;
-    
-    displayDiv = currentSectionElement.querySelector('.content-display');
-    editDiv = currentSectionElement.querySelector('.edit-mode');
-    textarea = currentSectionElement.querySelector('.edit-textarea');
-    
-    if (editMode) {
-        // Guardar contenido original
-        const contentKey = currentPage ? currentPage : currentSection;
-        originalContent[contentKey] = displayDiv.innerHTML;
-        
-        // Convertir HTML a texto editable
-        textarea.value = htmlToEditableText(displayDiv.innerHTML);
-        
-        // Mostrar modo edición
-        displayDiv.style.display = 'none';
-        editDiv.style.display = 'block';
-        
-        // Enfocar el textarea
-        textarea.focus();
-    } else {
-        // Volver al modo vista
-        displayDiv.style.display = 'block';
-        editDiv.style.display = 'none';
-    }
-}
-
-function saveContent() {
-    if (!editMode || !isLoggedIn) return;
-    let currentSectionElement, displayDiv, textarea;
-    if (currentPage) {
-        currentSectionElement = document.querySelector('#' + currentSection + '-subpages .subpage.active');
-    } else {
-        currentSectionElement = document.getElementById(currentSection);
-    }
-    if (!currentSectionElement) return;
-    displayDiv = currentSectionElement.querySelector('.content-display');
-    textarea = currentSectionElement.querySelector('.edit-textarea');
-    const newContent = editableTextToHtml(textarea.value);
-    displayDiv.innerHTML = newContent;
-    if (currentPage) {
-        const subpage = wikiData.pages[currentSection].subpages.find(p => p.id === currentPage);
-        if (subpage) {
-            subpage.content = newContent;
-        }
-    } else {
-        wikiData.pages[currentSection].content = newContent;
-    }
-    toggleEditMode();
-    saveWikiData();
-    renderAllSectionsFromWikiData();
-    showNotification('¡Contenido guardado exitosamente!', 'success');
-}
-
-function cancelEdit() {
-    if (!editMode) return;
-    
-    let currentSectionElement, displayDiv, editDiv;
-    
-    if (currentPage) {
-        currentSectionElement = document.querySelector('#' + currentSection + '-subpages .subpage.active');
-    } else {
-        currentSectionElement = document.getElementById(currentSection);
-    }
-    
-    if (!currentSectionElement) return;
-    
-    displayDiv = currentSectionElement.querySelector('.content-display');
-    editDiv = currentSectionElement.querySelector('.edit-mode');
-    
-    // Restaurar contenido original
-    const contentKey = currentPage ? currentPage : currentSection;
-    if (originalContent[contentKey]) {
-        displayDiv.innerHTML = originalContent[contentKey];
-    }
-    
-    // Volver al modo vista
-    displayDiv.style.display = 'block';
-    editDiv.style.display = 'none';
-    editMode = false;
-    
-    showNotification('Edición cancelada', 'info');
-}
-
-// Funciones para agregar páginas
-function showAddPage() {
-    if (!isLoggedIn) {
-        showNotification('Debes iniciar sesión para agregar páginas', 'error');
-        return;
-    }
-    document.getElementById('addPageModal').style.display = 'block';
-}
-
-function closeAddPage() {
-    document.getElementById('addPageModal').style.display = 'none';
-    document.getElementById('addPageForm').reset();
-}
-
-function handleAddPage() {
-    const title = document.getElementById('pageTitle').value;
-    const category = document.getElementById('pageCategory').value;
-    const content = document.getElementById('pageContent').value;
-    if (!title || !category) {
-        showNotification('Por favor completa todos los campos obligatorios', 'error');
-        return;
-    }
-    const pageId = title.toLowerCase().replace(/[^a-z0-9]/g, '') + '_' + Date.now();
-    const newPage = {
-        id: pageId,
-        title: title,
-        content: content ? editableTextToHtml(content) : '',
-        created: new Date().toISOString()
-    };
-    if (!wikiData.pages[category].subpages) {
-        wikiData.pages[category].subpages = [];
-    }
-    wikiData.pages[category].subpages.push(newPage);
-    saveWikiData();
-    if (currentSection === category) {
-        updatePageNavigation();
-    }
-    renderAllSectionsFromWikiData();
-    closeAddPage();
-    showNotification('¡Página creada exitosamente!', 'success');
-}
-
-// Funciones para agregar media
-function showMedia() {
-    if (!isLoggedIn) {
-        showNotification('Debes iniciar sesión para agregar media', 'error');
-        return;
-    }
-    document.getElementById('mediaModal').style.display = 'block';
-}
-
-function closeMedia() {
-    document.getElementById('mediaModal').style.display = 'none';
-    document.getElementById('mediaForm').reset();
-}
-
-function handleAddMedia() {
-    const type = document.getElementById('mediaType').value;
-    const url = document.getElementById('mediaUrl').value;
-    const caption = document.getElementById('mediaCaption').value;
-    
-    if (!type || !url) {
-        showNotification('Por favor completa todos los campos obligatorios', 'error');
-        return;
-    }
-    
-    insertMediaIntoTextarea(type, url, caption);
-    closeMedia();
-    showNotification('¡Media agregado exitosamente!', 'success');
-}
-
-function insertMedia(type) {
-    const url = prompt('Introduce la URL del ' + type + ':');
-    if (!url) return;
-    
-    const caption = prompt('Introduce una descripción (opcional):');
-    insertMediaIntoTextarea(type, url, caption);
-}
-
-function insertMediaIntoTextarea(type, url, caption) {
-    let currentSectionElement, textarea;
-    
-    if (currentPage) {
-        currentSectionElement = document.querySelector('#' + currentSection + '-subpages .subpage.active');
-    } else {
-        currentSectionElement = document.getElementById(currentSection);
-    }
-    
-    if (!currentSectionElement) return;
-    
-    textarea = currentSectionElement.querySelector('.edit-textarea');
-    
-    let mediaText = '';
-    switch (type) {
-        case 'image':
-        case 'gif':
-            mediaText = `[IMG:${url}]`;
-            break;
-        case 'video':
-            mediaText = `[VIDEO:${url}]`;
-            break;
-    }
-    
-    if (caption) {
-        mediaText += `[CAPTION:${caption}]`;
-    }
-    
-    // Insertar en la posición del cursor
-    const cursorPos = textarea.selectionStart;
-    const textBefore = textarea.value.substring(0, cursorPos);
-    const textAfter = textarea.value.substring(cursorPos);
-    
-    textarea.value = textBefore + '\n\n' + mediaText + '\n\n' + textAfter;
-    textarea.focus();
-    textarea.setSelectionRange(cursorPos + mediaText.length + 4, cursorPos + mediaText.length + 4);
-}
-
-// Funciones de conversión de texto
-function htmlToEditableText(html) {
-    return html
-        .replace(/<h2[^>]*>/g, '## ')
-        .replace(/<\/h2>/g, '\n\n')
-        .replace(/<h3[^>]*>/g, '### ')
-        .replace(/<\/h3>/g, '\n\n')
-        .replace(/<p[^>]*>/g, '')
-        .replace(/<\/p>/g, '\n\n')
-        .replace(/<ul[^>]*>/g, '')
-        .replace(/<\/ul>/g, '\n')
-        .replace(/<li[^>]*>/g, '• ')
-        .replace(/<\/li>/g, '\n')
-        .replace(/<strong>/g, '**')
-        .replace(/<\/strong>/g, '**')
-        .replace(/<em>/g, '*')
-        .replace(/<\/em>/g, '*')
-        .replace(/<div class="media-container"[^>]*>[\s\S]*?<\/div>/g, (match) => {
-            // Extraer información del media
-            const imgMatch = match.match(/<img[^>]*src="([^"]*)"[^>]*>/);
-            const videoMatch = match.match(/<video[^>]*src="([^"]*)"[^>]*>/);
-            const captionMatch = match.match(/<div class="media-caption">([^<]*)<\/div>/);
-            
-            if (imgMatch) {
-                return `[IMG:${imgMatch[1]}]` + (captionMatch ? `[CAPTION:${captionMatch[1]}]` : '');
-            } else if (videoMatch) {
-                return `[VIDEO:${videoMatch[1]}]` + (captionMatch ? `[CAPTION:${captionMatch[1]}]` : '');
-            }
-            return '';
-        })
-        .replace(/<div[^>]*>/g, '')
-        .replace(/<\/div>/g, '\n')
-        .replace(/\n\n+/g, '\n\n')
-        .trim();
-}
-
-function editableTextToHtml(text) {
-    return text
-        .replace(/## (.*)/g, '<h2>$1</h2>')
-        .replace(/### (.*)/g, '<h3>$1</h3>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/^• (.*)$/gm, '<li>$1</li>')
-        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-        .replace(/\[IMG:(.*?)\](\[CAPTION:(.*?)\])?/g, (match, url, captionPart, caption) => {
-            const captionHtml = caption ? `<div class="media-caption">${caption}</div>` : '';
-            return `<div class="media-container"><img src="${url}" alt="Imagen">${captionHtml}</div>`;
-        })
-        .replace(/\[VIDEO:(.*?)\](\[CAPTION:(.*?)\])?/g, (match, url, captionPart, caption) => {
-            const captionHtml = caption ? `<div class="media-caption">${caption}</div>` : '';
-            return `<div class="media-container"><video src="${url}" controls></video>${captionHtml}</div>`;
-        })
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/^(?!<[h|u|d])/gm, '<p>')
-        .replace(/(?<!>)$/gm, '</p>')
-        .replace(/<p><\/p>/g, '')
-        .replace(/<p>(<[hu])/g, '$1')
-        .replace(/(<\/[hu][^>]*>)<\/p>/g, '$1')
-        .replace(/<p>(<div)/g, '$1')
-        .replace(/(<\/div>)<\/p>/g, '$1');
-}
-
-// Funciones de persistencia de datos
-function saveWikiData() {
-    // Guardar el objeto wikiData como JSON en localStorage
-    try {
-        const json = JSON.stringify(wikiData, null, 2);
-        localStorage.setItem(STORAGE_KEY, json);
-        console.log('Wiki guardada en JSON:', json);
-    } catch (e) {
-        showNotification('Error al guardar los datos', 'error');
-        console.error('Error al guardar en localStorage:', e);
-    }
-}
-
-function loadWikiData() {
-    // Cargar el objeto wikiData desde el JSON en localStorage
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            wikiData = JSON.parse(stored);
-            renderAllSectionsFromWikiData();
-            console.log('Wiki cargada desde JSON:', wikiData);
-        } else {
-            renderAllSectionsFromWikiData();
-            console.log('Wiki vacía, puedes crear contenido.');
-        }
-    } catch (e) {
-        showNotification('Error al cargar los datos', 'error');
-        console.error('Error al cargar de localStorage:', e);
-    }
-}
-
-// Agregar botón para exportar datos
-function exportWikiDataAsJson() {
-    const dataStr = JSON.stringify(wikiData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wikiData.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showNotification('Archivo wikiData.json exportado. Sube este archivo a tu repositorio para compartir los cambios.', 'info');
-}
-
-// Renderizar el contenido de cada sección desde wikiData
-function renderAllSectionsFromWikiData() {
-    Object.keys(wikiData.pages).forEach(sectionId => {
-        const section = wikiData.pages[sectionId];
-        const sectionDiv = document.getElementById(sectionId);
-        if (!sectionDiv) return;
-        const contentDisplay = sectionDiv.querySelector('.content-display');
-        if (contentDisplay) {
-            contentDisplay.innerHTML = section.content || '';
-        }
-        // Renderizar subpáginas si existen
-        const subpagesDiv = document.getElementById(sectionId + '-subpages');
-        if (subpagesDiv) {
-            subpagesDiv.innerHTML = '';
-            if (section.subpages && section.subpages.length > 0) {
-                section.subpages.forEach(subpage => {
-                    // No mostrar subpáginas aquí, solo limpiar (se muestran al hacer click)
-                });
-            }
-        }
-    });
-}
-
-// Funciones de utilidad
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.style.display = 'none';
-    });
-}
-
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-// Función para manejar teclas de acceso rápido
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 's' && editMode) {
+    function handleLogin(e) {
         e.preventDefault();
-        saveContent();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (username === editorCredentials.username && password === editorCredentials.password) {
+            isAuthenticated = true;
+            loginModal.style.display = 'none';
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            editorPanel.style.display = 'block';
+            renderCurrentPage(); // Re-renderizar para mostrar botones de edición
+            
+            // Limpiar formulario
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        } else {
+            alert('Credenciales incorrectas');
+        }
     }
-    
-    if (e.key === 'Escape' && editMode) {
-        cancelEdit();
+
+    function logout() {
+        isAuthenticated = false;
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+        editorPanel.style.display = 'none';
+        
+        // Recargar datos desde defaultData
+        tempData = JSON.parse(JSON.stringify(defaultData));
+        renderNavigation();
+        renderCurrentPage();
     }
+
+    function renderNavigation() {
+        navList.innerHTML = '';
+        
+        tempData.pages.forEach(page => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = page.title;
+            a.classList.toggle('active', page.id === tempData.currentPage);
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                tempData.currentPage = page.id;
+                tempData.currentSubpage = null;
+                renderNavigation();
+                renderCurrentPage();
+            });
+            li.appendChild(a);
+            navList.appendChild(li);
+        });
+    }
+
+    function renderSubpageNavigation(page) {
+        subpageNav.innerHTML = '';
+        
+        if (page.subpages && page.subpages.length > 0) {
+            page.subpages.forEach(subpage => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.textContent = subpage.title;
+                a.classList.toggle('active', subpage.id === tempData.currentSubpage);
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    tempData.currentSubpage = subpage.id;
+                    renderCurrentPage();
+                });
+                subpageNav.appendChild(a);
+            });
+        }
+    }
+
+    function renderCurrentPage() {
+        const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        if (!currentPage) return;
+
+        // Renderizar navegación de subpáginas
+        renderSubpageNavigation(currentPage);
+
+        // Determinar qué contenido mostrar
+        let contentToShow = currentPage.content;
+        let titleToShow = currentPage.title;
+
+        if (tempData.currentSubpage) {
+            const currentSubpage = currentPage.subpages.find(sub => sub.id === tempData.currentSubpage);
+            if (currentSubpage) {
+                contentToShow = currentSubpage.content;
+                titleToShow = currentSubpage.title;
+            }
+        }
+
+        // Actualizar título
+        pageTitle.textContent = titleToShow;
+
+        // Renderizar contenido
+        pageContent.innerHTML = '';
+        pageContent.className = 'page-content';
+
+        if (contentToShow && contentToShow.length > 0) {
+            contentToShow.forEach(item => {
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'content-item';
+                contentDiv.id = item.id;
+                
+                if (isAuthenticated) {
+                    contentDiv.classList.add('editable');
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'edit-btn';
+                    editBtn.textContent = 'Editar';
+                    editBtn.addEventListener('click', () => editContent(item));
+                    contentDiv.appendChild(editBtn);
+                }
+
+                if (item.type === 'text') {
+                    if (item.title) {
+                        const titleEl = document.createElement('h3');
+                        titleEl.textContent = item.title;
+                        contentDiv.appendChild(titleEl);
+                    }
+                    
+                    if (item.text) {
+                        const textEl = document.createElement('p');
+                        textEl.textContent = item.text;
+                        contentDiv.appendChild(textEl);
+                    }
+                    
+                    if (item.alignment) {
+                        contentDiv.classList.add(`text-${item.alignment}`);
+                    }
+                } else if (item.type === 'embed') {
+                    if (item.title) {
+                        const titleEl = document.createElement('h3');
+                        titleEl.textContent = item.title;
+                        contentDiv.appendChild(titleEl);
+                    }
+                    
+                    if (item.embedCode) {
+                        const embedDiv = document.createElement('div');
+                        embedDiv.innerHTML = item.embedCode;
+                        contentDiv.appendChild(embedDiv);
+                    }
+                    
+                    if (item.alignment) {
+                        contentDiv.classList.add(`text-${item.alignment}`);
+                    }
+                }
+
+                pageContent.appendChild(contentDiv);
+            });
+        } else {
+            // Página vacía
+            const emptyMsg = document.createElement('p');
+            emptyMsg.textContent = 'Esta página está vacía. ';
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.style.color = '#666';
+            
+            if (isAuthenticated) {
+                emptyMsg.innerHTML += '<br><br>';
+                const addBtn = document.createElement('button');
+                addBtn.textContent = 'Agregar Contenido';
+                addBtn.className = 'btn btn-primary';
+                addBtn.addEventListener('click', () => addNewContent());
+                emptyMsg.appendChild(addBtn);
+            }
+            
+            pageContent.appendChild(emptyMsg);
+        }
+    }
+
+    function editContent(item) {
+        currentEditingItem = item;
+        currentEditingPage = tempData.currentPage;
+        currentEditingSubpage = tempData.currentSubpage;
+        
+        // Llenar el formulario
+        document.getElementById('content-title').value = item.title || '';
+        document.getElementById('content-text').value = item.text || '';
+        document.getElementById('content-alignment').value = item.alignment || 'left';
+        document.getElementById('embed-code').value = item.embedCode || '';
+        
+        contentModal.style.display = 'block';
+    }
+
+    function addNewContent() {
+        const newId = 'content-' + Date.now();
+        const newItem = {
+            id: newId,
+            type: 'text',
+            title: '',
+            text: '',
+            alignment: 'left'
+        };
+        
+        // Agregar al contenido actual
+        const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        if (tempData.currentSubpage) {
+            const currentSubpage = currentPage.subpages.find(sub => sub.id === tempData.currentSubpage);
+            if (!currentSubpage.content) currentSubpage.content = [];
+            currentSubpage.content.push(newItem);
+        } else {
+            if (!currentPage.content) currentPage.content = [];
+            currentPage.content.push(newItem);
+        }
+        
+        editContent(newItem);
+    }
+
+    function saveContent() {
+        const title = document.getElementById('content-title').value;
+        const text = document.getElementById('content-text').value;
+        const alignment = document.getElementById('content-alignment').value;
+        const embedCode = document.getElementById('embed-code').value.trim();
+        
+        if (!title && !text && !embedCode) {
+            alert('Debe agregar al menos un título, texto o código embed');
+            return;
+        }
+        
+        // Determinar el tipo de contenido
+        const contentType = embedCode ? 'embed' : 'text';
+        
+        // Actualizar el item
+        currentEditingItem.type = contentType;
+        currentEditingItem.title = title;
+        currentEditingItem.text = text;
+        currentEditingItem.alignment = alignment;
+        
+        if (contentType === 'embed') {
+            currentEditingItem.embedCode = embedCode;
+        }
+        
+        // Cerrar modal y re-renderizar
+        contentModal.style.display = 'none';
+        renderCurrentPage();
+        
+        // Limpiar variables
+        currentEditingItem = null;
+        currentEditingPage = null;
+        currentEditingSubpage = null;
+    }
+
+    function addNewPage() {
+        const title = prompt('Ingrese el título de la nueva página:');
+        if (!title) return;
+        
+        const newId = 'page-' + Date.now();
+        const newPage = {
+            id: newId,
+            title: title,
+            content: [],
+            subpages: []
+        };
+        
+        tempData.pages.push(newPage);
+        tempData.currentPage = newId;
+        tempData.currentSubpage = null;
+        
+        renderNavigation();
+        renderCurrentPage();
+    }
+
+    function addNewSubpage() {
+        const title = prompt('Ingrese el título de la nueva subpágina:');
+        if (!title) return;
+        
+        const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        if (!currentPage) return;
+        
+        const newId = 'subpage-' + Date.now();
+        const newSubpage = {
+            id: newId,
+            title: title,
+            content: []
+        };
+        
+        if (!currentPage.subpages) currentPage.subpages = [];
+        currentPage.subpages.push(newSubpage);
+        tempData.currentSubpage = newId;
+        
+        renderCurrentPage();
+    }
+
+    function saveChanges() {
+        // Mostrar mensaje de confirmación
+        const confirmMsg = `Los cambios se han guardado temporalmente. 
+        
+Para hacer los cambios permanentes:
+1. Haz clic en "Descargar JSON"
+2. Reemplaza el contenido del archivo data.js con los nuevos datos
+3. Sube los cambios a GitHub
+        
+¿Deseas descargar el JSON ahora?`;
+        
+        if (confirm(confirmMsg)) {
+            downloadJson();
+        }
+    }
+
+    function downloadJson() {
+        const dataStr = `// Codex Astralis - Datos actualizados
+const defaultData = ${JSON.stringify(tempData, null, 2)};
+
+// Credenciales de editor
+const editorCredentials = {
+    username: 'Editor',
+    password: '06.23.08'
+};
+
+// Variable para almacenar datos temporales
+let tempData = JSON.parse(JSON.stringify(defaultData));
+
+// Variable para el estado de autenticación
+let isAuthenticated = false;`;
+        
+        const blob = new Blob([dataStr], { type: 'application/javascript' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.js';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('Archivo data.js descargado. Reemplaza el archivo existente para hacer los cambios permanentes.');
+    }
+
+    // Función para eliminar contenido (bonus)
+    function deleteContent(itemId) {
+        if (!confirm('¿Está seguro de que desea eliminar este contenido?')) return;
+        
+        const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        
+        if (tempData.currentSubpage) {
+            const currentSubpage = currentPage.subpages.find(sub => sub.id === tempData.currentSubpage);
+            currentSubpage.content = currentSubpage.content.filter(item => item.id !== itemId);
+        } else {
+            currentPage.content = currentPage.content.filter(item => item.id !== itemId);
+        }
+        
+        renderCurrentPage();
+    }
+
+    // Función para eliminar página (bonus)
+    function deletePage(pageId) {
+        if (!confirm('¿Está seguro de que desea eliminar esta página?')) return;
+        
+        tempData.pages = tempData.pages.filter(page => page.id !== pageId);
+        
+        if (tempData.currentPage === pageId) {
+            tempData.currentPage = tempData.pages[0]?.id || 'main';
+            tempData.currentSubpage = null;
+        }
+        
+        renderNavigation();
+        renderCurrentPage();
+    }
+
+    // Función para eliminar subpágina (bonus)
+    function deleteSubpage(subpageId) {
+        if (!confirm('¿Está seguro de que desea eliminar esta subpágina?')) return;
+        
+        const currentPage = tempData.pages.find(page => page.id === tempData.currentPage);
+        currentPage.subpages = currentPage.subpages.filter(sub => sub.id !== subpageId);
+        
+        if (tempData.currentSubpage === subpageId) {
+            tempData.currentSubpage = null;
+        }
+        
+        renderCurrentPage();
+    }
+
+    // Agregar botones de eliminar al contenido cuando se está editando
+    function addDeleteButtons() {
+        if (!isAuthenticated) return;
+        
+        const contentItems = document.querySelectorAll('.content-item');
+        contentItems.forEach(item => {
+            if (!item.querySelector('.delete-btn')) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '×';
+                deleteBtn.style.cssText = `
+                    position: absolute;
+                    top: 10px;
+                    right: 50px;
+                    background: #e74c3c;
+                    color: white;
+                    border: none;
+                    padding: 5px 8px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 14px;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                deleteBtn.addEventListener('click', () => deleteContent(item.id));
+                item.appendChild(deleteBtn);
+                
+                // Mostrar botón al hacer hover
+                item.addEventListener('mouseenter', () => deleteBtn.style.opacity = '1');
+                item.addEventListener('mouseleave', () => deleteBtn.style.opacity = '0');
+            }
+        });
+    }
+
+    // Modificar renderCurrentPage para incluir botones de eliminar
+    const originalRenderCurrentPage = renderCurrentPage;
+    renderCurrentPage = function() {
+        originalRenderCurrentPage();
+        setTimeout(addDeleteButtons, 100);
+    };
+
+    // Atajos de teclado para editores
+    document.addEventListener('keydown', (e) => {
+        if (!isAuthenticated) return;
+        
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            saveChanges();
+        }
+        
+        if (e.ctrlKey && e.key === 'n') {
+            e.preventDefault();
+            addNewContent();
+        }
+    });
+
+    // Mejorar la experiencia de usuario
+    document.addEventListener('beforeunload', (e) => {
+        if (isAuthenticated && JSON.stringify(tempData) !== JSON.stringify(defaultData)) {
+            e.preventDefault();
+            e.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+        }
+    });
 });

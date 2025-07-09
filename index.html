@@ -4,18 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Codex Astralis</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="floating-gears gear1">⚙</div>
-    <div class="floating-gears gear2">⚙</div>
-    <div class="floating-gears gear3">⚙</div>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
     
-    <!-- Modal de Login -->
-    <div id="loginModal" class="modal">
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Codex Astralis</h1>
+            <nav class="nav">
+                <ul class="nav-list" id="nav-list">
+                    <!-- Navigation will be populated by JavaScript -->
+                </ul>
+            </nav>
+            <div class="auth-section">
+                <button id="login-btn" class="btn btn-primary">Iniciar Sesión</button>
+                <button id="logout-btn" class="btn btn-secondary" style="display: none;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="editor-panel" id="editor-panel" style="display: none;">
+                <div class="editor-controls">
+                    <button id="add-page-btn" class="btn btn-primary">Agregar Página</button>
+                    <button id="add-subpage-btn" class="btn btn-secondary">Agregar Subpágina</button>
+                    <button id="add-content-btn" class="btn btn-info">Agregar Contenido</button>
+                    <button id="save-changes-btn" class="btn btn-success">Guardar Cambios</button>
+                    <button id="download-json-btn" class="btn btn-info">Descargar JSON</button>
+                </div>
+                <div class="editor-info">
+                    <small>Los cambios son temporales hasta que descargues el JSON y actualices el repositorio.</small>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <h2 id="page-title">Página Principal</h2>
+                    <div class="subpage-nav" id="subpage-nav">
+                        <!-- Subpage navigation will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="page-content" id="page-content">
+                    <!-- Page content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
         <div class="modal-content">
-            <h2>Acceso de Editor</h2>
-            <form id="loginForm">
+            <h3>Iniciar Sesión como Editor</h3>
+            <form id="login-form">
                 <div class="form-group">
                     <label for="username">Usuario:</label>
                     <input type="text" id="username" name="username" required>
@@ -24,208 +69,52 @@
                     <label for="password">Contraseña:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                <div class="form-buttons">
-                    <button type="submit">Iniciar Sesión</button>
-                    <button type="button" onclick="closeLogin()">Cancelar</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                    <button type="button" id="cancel-login" class="btn btn-secondary">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
-    
-    <!-- Modal para Agregar Página -->
-    <div id="addPageModal" class="modal">
-        <div class="modal-content">
-            <h2>Agregar Nueva Página</h2>
-            <form id="addPageForm">
+
+    <!-- Content Editor Modal -->
+    <div id="content-modal" class="modal">
+        <div class="modal-content large">
+            <h3>Editar Contenido</h3>
+            <div class="editor-form">
                 <div class="form-group">
-                    <label for="pageTitle">Título de la Página:</label>
-                    <input type="text" id="pageTitle" name="pageTitle" required>
+                    <label for="content-title">Título:</label>
+                    <input type="text" id="content-title" name="content-title">
                 </div>
                 <div class="form-group">
-                    <label for="pageCategory">Categoría:</label>
-                    <select id="pageCategory" name="pageCategory" required>
-                        <option value="">Seleccionar categoría</option>
-                        <option value="home">Introduccion</option>
-                        <option value="technology">Tutoriales</option>
-                        <option value="exploration">Mapa</option>
-                        <option value="species">Historia</option>
-                        <option value="history">Servidor</option>
+                    <label for="content-text">Contenido:</label>
+                    <textarea id="content-text" name="content-text" rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="content-alignment">Alineación:</label>
+                    <select id="content-alignment" name="content-alignment">
+                        <option value="left">Izquierda</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Derecha</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="pageContent">Contenido Inicial:</label>
-                    <textarea id="pageContent" name="pageContent" rows="10" placeholder="Escribe el contenido inicial..."></textarea>
+                    <label for="embed-code">Código Embed (YouTube, Archive.org, etc.):</label>
+                    <textarea id="embed-code" name="embed-code" rows="3" placeholder="Pega aquí tu código embed"></textarea>
                 </div>
-                <div class="form-buttons">
-                    <button type="submit">Crear Página</button>
-                    <button type="button" onclick="closeAddPage()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal para Agregar Media -->
-    <div id="mediaModal" class="modal">
-        <div class="modal-content">
-            <h2>Agregar Media</h2>
-            <form id="mediaForm">
-                <div class="form-group">
-                    <label for="mediaType">Tipo de Media:</label>
-                    <select id="mediaType" name="mediaType" required>
-                        <option value="">Seleccionar tipo</option>
-                        <option value="image">Imagen</option>
-                        <option value="gif">GIF</option>
-                        <option value="video">Video</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="mediaUrl">URL del Media:</label>
-                    <input type="url" id="mediaUrl" name="mediaUrl" required placeholder="https://ejemplo.com/imagen.jpg">
-                </div>
-                <div class="form-group">
-                    <label for="mediaCaption">Descripción (opcional):</label>
-                    <input type="text" id="mediaCaption" name="mediaCaption" placeholder="Descripción del media">
-                </div>
-                <div class="form-buttons">
-                    <button type="submit">Agregar Media</button>
-                    <button type="button" onclick="closeMedia()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="header">
-            <h1>Codex Astralis</h1>
-            <p class="subtitle">Compendium Mechanicus et Cosmicus</p>
-        </div>
-        
-        <div class="user-status">
-            <span id="userInfo">Visitante</span>
-            <button id="loginBtn" class="auth-btn" onclick="showLogin()">Iniciar Sesión</button>
-            <button id="logoutBtn" class="auth-btn" onclick="logout()" style="display: none;">Cerrar Sesión</button>
-        </div>
-        
-        <div class="navigation">
-            <button class="nav-btn active" onclick="showSection('home')">Introduccion</button>
-            <button class="nav-btn" onclick="showSection('technology')">Tutoriales</button>
-            <button class="nav-btn" onclick="showSection('exploration')">Mapa</button>
-            <button class="nav-btn" onclick="showSection('species')">Historia y Lore</button>
-            <button class="nav-btn" onclick="showSection('history')">Servidor</button>
-        </div>
-        
-        <div class="edit-controls" id="editControls" style="display: none;">
-            <button class="edit-btn" onclick="toggleEditMode()">✏️ Editar</button>
-            <button class="edit-btn" onclick="saveContent()">💾 Guardar</button>
-            <button class="edit-btn" onclick="cancelEdit()">❌ Cancelar</button>
-            <button class="edit-btn" onclick="showAddPage()">📄 Nueva Página</button>
-            <button class="edit-btn" onclick="showMedia()">🎬 Agregar Media</button>
-            <button class="edit-btn" id="exportJsonBtn" style="display:block;">⬇️ Exportar datos</button>
-        </div>
-        
-        <div class="page-navigation" id="pageNav">
-            <!-- Las páginas se generarán dinámicamente -->
-        </div>
-        
-        <div class="content-container" id="contentContainer">
-            <!-- Sección Inicio -->
-            <div id="home" class="section active">
-                <div class="wiki-content">
-                    <div class="content-display">
-                        <!-- Sin datos por defecto, puedes crear la página como quieras -->
-                    </div>
-                    <div class="edit-mode">
-                        <textarea class="edit-textarea" placeholder="Escribe tu contenido aquí..."></textarea>
-                        <div class="media-controls">
-                            <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                            <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                            <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sección Tecnología -->
-            <div id="technology" class="section">
-                <div class="wiki-content">
-                    <div class="content-display">
-                        <!-- Sin datos por defecto -->
-                    </div>
-                    <div class="edit-mode">
-                        <textarea class="edit-textarea" placeholder="Escribe sobre tecnología..."></textarea>
-                        <div class="media-controls">
-                            <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                            <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                            <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="subpages" id="technology-subpages">
-                    <!-- Subpáginas se generarán dinámicamente -->
-                </div>
-            </div>
-            <!-- Sección Exploración -->
-            <div id="exploration" class="section">
-                <div class="wiki-content">
-                    <div class="content-display">
-                        <!-- Sin datos por defecto -->
-                    </div>
-                    <div class="edit-mode">
-                        <textarea class="edit-textarea" placeholder="Escribe sobre exploración..."></textarea>
-                        <div class="media-controls">
-                            <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                            <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                            <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="subpages" id="exploration-subpages">
-                    <!-- Subpáginas se generarán dinámicamente -->
-                </div>
-            </div>
-            <!-- Sección Especies -->
-            <div id="species" class="section">
-                <div class="wiki-content">
-                    <div class="content-display">
-                        <!-- Sin datos por defecto -->
-                    </div>
-                    <div class="edit-mode">
-                        <textarea class="edit-textarea" placeholder="Escribe sobre especies..."></textarea>
-                        <div class="media-controls">
-                            <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                            <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                            <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="subpages" id="species-subpages">
-                    <!-- Subpáginas se generarán dinámicamente -->
-                </div>
-            </div>
-            <!-- Sección Historia -->
-            <div id="history" class="section">
-                <div class="wiki-content">
-                    <div class="content-display">
-                        <!-- Sin datos por defecto -->
-                    </div>
-                    <div class="edit-mode">
-                        <textarea class="edit-textarea" placeholder="Escribe sobre historia..."></textarea>
-                        <div class="media-controls">
-                            <button class="media-btn" onclick="insertMedia('image')">🖼️ Imagen</button>
-                            <button class="media-btn" onclick="insertMedia('gif')">🎞️ GIF</button>
-                            <button class="media-btn" onclick="insertMedia('video')">🎬 Video</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="subpages" id="history-subpages">
-                    <!-- Subpáginas se generarán dinámicamente -->
+                <div class="form-actions">
+                    <button type="button" id="save-content" class="btn btn-success">Guardar</button>
+                    <button type="button" id="cancel-edit" class="btn btn-secondary">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Indicadores de estado -->
+    <div id="status-indicator" class="status-indicator"></div>
+    <div id="editor-badge" class="editor-badge">Modo Editor Activo</div>
+
+    <script src="data.js"></script>
     <script src="script.js"></script>
-    <footer class="site-footer">
-        Desarrollado por Warbart Studios (Desau) 2025
-    </footer>
 </body>
 </html>
