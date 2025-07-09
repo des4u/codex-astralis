@@ -1,0 +1,29 @@
+{
+  "pages": {
+    "home": {
+      "title": "Introduccion",
+      "content": null,
+      "subpages": []
+    },
+    "technology": {
+      "title": "Tutoriales",
+      "content": null,
+      "subpages": []
+    },
+    "exploration": {
+      "title": "Mapa",
+      "content": null,
+      "subpages": []
+    },
+    "species": {
+      "title": "Historia y Lore",
+      "content": null,
+      "subpages": []
+    },
+    "history": {
+      "title": "Servidor",
+      "content": null,
+      "subpages": []
+    }
+  }
+}
