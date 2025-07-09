@@ -602,3 +602,17 @@ body::before {
         font-size: 0.8rem;
     }
 }
+
+.site-footer {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0 10px 0;
+    color: #b8860b;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    background: none;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    margin-top: 30px;
+    z-index: 2;
+}
