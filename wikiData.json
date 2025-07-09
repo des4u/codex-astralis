@@ -10,13 +10,21 @@
           "title": "Bienvenido a Codex Astralis",
           "text": "",
           "alignment": "center",
-          "embedCode": "<iframe src=\"https://archive.org/embed/trailer_20250709\" width=\"1100\" height=\"384\" frameborder=\"0\" webkitallowfullscreen=\"true\" mozallowfullscreen=\"true\" allowfullscreen=\"\"></iframe>"
+          "embedCode": "<div style=\"text-align: center; margin: 40px 0; font-family: 'Segoe UI', sans-serif; color: #ffffff;\">\n  <iframe \n    src=\"https://archive.org/embed/trailer_20250709\" \n    width=\"1100\" \n    height=\"384\" \n    frameborder=\"0\" \n    webkitallowfullscreen=\"true\" \n    mozallowfullscreen=\"true\" \n    allowfullscreen\n    style=\"max-width: 100%; border-radius: 8px; box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);\">\n  </iframe>\n  \n  <p style=\"margin-top: 15px; font-size: 1.2em; color: #cccccc;\">🎬 Trailers del servidor</p>\n</div>"
         },
         {
           "id": "content-2",
-          "type": "text",
+          "type": "embed",
           "title": "Sobre este Codex",
-          "text": "Codex Astralis es una plataforma de conocimiento que combina la elegancia victoriana con la vastedad del espacio. Cada página es cuidadosamente curada para ofrecerte una experiencia única de aprendizaje y descubrimiento.",
+          "text": "",
+          "alignment": "left",
+          "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #ffc107;\">📖 Codex Astralis</h2>\n\n  <p style=\"line-height: 1.6; font-size: 1.1em;\">\n    <strong>Codex Astralis</strong> es una plataforma de conocimiento que fusiona la <span style=\"color:#ffcc66;\">elegancia victoriana</span> con la <span style=\"color:#66ccff;\">inmensidad del espacio</span>.\n    Cada página está cuidadosamente curada para ofrecerte una experiencia única de <strong>aprendizaje</strong> y <strong>descubrimiento</strong>.\n  </p>\n\n  <p style=\"line-height: 1.6; font-size: 1em; font-style: italic; color: #cccccc;\">\n    Un compendio galáctico para mentes curiosas. Explora, entiende, conquista.\n  </p>\n</div>"
+        },
+        {
+          "id": "content-1752092195805",
+          "type": "text",
+          "title": "",
+          "text": "",
           "alignment": "left"
         }
       ],
@@ -29,15 +37,84 @@
         {
           "id": "content-1752091724955",
           "type": "embed",
-          "title": "Explicacion",
+          "title": "Indice",
           "text": "",
           "alignment": "center",
-          "embedCode": "<div style=\"background-color: #0d0d0d; color: #f0f0f0; padding: 25px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: auto; box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);\">\n  <h2 style=\"color: #00ffff; text-align: center; margin-bottom: 10px;\">📚 Guías del Servidor</h2>\n  \n  <p style=\"font-size: 1.1em; line-height: 1.6;\"><strong>¡Bienvenido a las guías oficiales de <span style=\"color:#00ff99;\">StellarMarch</span>!</strong> Aquí encontrarás toda la información que necesitas para comenzar tu viaje y dominar el universo.</p>\n\n  <hr style=\"border: 0; height: 2px; background: linear-gradient(to right, #00ffff, #00ff99); margin: 20px 0;\">\n\n  <h3 style=\"color: #00ffcc;\">📌 ¿Qué contienen las guías?</h3>\n  <ul style=\"padding-left: 20px; line-height: 1.7;\">\n    <li><strong>Introducción al juego:</strong> aprende los conceptos básicos para no perderte en tu primer aterrizaje.</li>\n    <li><strong>Sistemas y mecánicas:</strong> descubre cómo funcionan la minería, comercio, combate, y más.</li>\n    <li><strong>Creación de naciones:</strong> construye tu imperio espacial desde cero y personaliza su enfoque.</li>\n    <li><strong>Tecnología y progreso:</strong> explora las ramas de investigación y evoluciona tu civilización.</li>\n    <li><strong>Eventos y secretos:</strong> mantente al tanto de los eventos galácticos y las historias ocultas.</li>\n  </ul>\n\n  <h3 style=\"color: #00ffcc;\">🎮 ¿Por qué son importantes?</h3>\n  <p style=\"font-size: 1em; line-height: 1.6;\">\n    Estas guías no solo te ayudarán a sobrevivir en el espacio, sino que también potenciarán tu estrategia, te ahorrarán tiempo y te conectarán con el lore profundo del universo <strong>StellarMarch</strong>.\n  </p>\n\n  <h3 style=\"color: #00ffcc;\">🚀 Acceso fácil y continuo</h3>\n  <p style=\"font-size: 1em; line-height: 1.6;\">\n    Todas las guías están pensadas para que <strong>cualquier jugador</strong>, sin importar su experiencia, pueda comprenderlas sin dificultad. Puedes consultarlas en cualquier momento en nuestra <a href=\"https://stellarmarch.net\" style=\"color:#00ffff; text-decoration: underline;\">página oficial</a>.\n  </p>\n\n  <hr style=\"border: 0; height: 2px; background: linear-gradient(to right, #00ff99, #00ffff); margin: 20px 0;\">\n\n  <p style=\"text-align: center; font-style: italic; color: #cccccc;\">📖 Conocimiento es poder... ¡y en el universo StellarMarch, es tu mejor arma!</p>\n</div>"
+          "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #00bcd4; text-align: center;\">📘 Índice de Guías</h2>\n  <p style=\"text-align: center; color: #cccccc;\">Explora los temas clave para dominar StellarMarch</p>\n\n  <ul style=\"line-height: 1.8; font-size: 1em; padding-left: 20px; color: #ffffff;\">\n    <li><strong>Iniciando en el servidor:</strong> Todo lo que necesitas saber para empezar tu aventura espacial sin perderte.</li>\n    <li><strong>Supervivencia:</strong> Aprende a recolectar recursos, construir refugios y mantenerte con vida en entornos hostiles.</li>\n    <li><strong>Naciones:</strong> Crea, lidera y expande tu propia civilización intergaláctica con identidad propia.</li>\n    <li><strong>Guerras:</strong> Entiende cómo funcionan los conflictos entre jugadores, desde escaramuzas hasta invasiones masivas.</li>\n    <li><strong>Investigación:</strong> Desbloquea tecnologías, mejora tus capacidades y lleva tu imperio al siguiente nivel.</li>\n    <li><strong>Mapas estratégicos:</strong> Usa el entorno galáctico a tu favor con mapas que revelan rutas, recursos y amenazas.</li>\n    <li><strong>Construcción de bases:</strong> Diseña estructuras defensivas, centros de mando y puntos de producción eficientes.</li>\n    <li><strong>Construcción de naves:</strong> Aprende a ensamblar desde cazas ligeros hasta colosales naves insignia.</li>\n    <li><strong>Movimientos de flotas y combate naval:</strong> Coordina ataques, organiza defensas y domina el espacio con tu armada.</li>\n    <li><strong>Guerra estelar:</strong> Las batallas más grandes y complejas del universo, donde cada decisión cuenta.</li>\n    <li><strong>Comercio estelar:</strong> Participa en una economía dinámica, transporta bienes y genera riqueza para tu nación.</li>\n  </ul>\n</div>"
         }
       ],
-      "subpages": []
+      "subpages": [
+        {
+          "id": "subpage-1752092396030",
+          "title": "Iniciando en el servidor",
+          "content": [
+            {
+              "id": "content-1752092449182",
+              "type": "embed",
+              "title": "Comenzando tu aventura",
+              "text": "",
+              "alignment": "center",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #00bcd4;\">🪐 Iniciando la Partida</h2>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    Al comenzar tu aventura en <strong>StellarMarch</strong>, aparecerás en un entorno con un <strong>menú negro</strong>. Este menú es tu punto de partida para explorar el servidor. \n    Si por alguna razón no se abre automáticamente, puedes activarlo en cualquier momento usando el comando <code>/menu</code>.\n  </p>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    Tu <strong>primera misión</strong> será elegir tu <span style=\"color: #00ff99;\"><strong>planeta inicial</strong></span>. Cada planeta representa un entorno con desafíos únicos y características distintas. \n    Piensa bien tu decisión, ya que el planeta que elijas será tu hogar permanente durante toda tu estancia en StellarMarch.\n  </p>\n\n</div>"
+            },
+            {
+              "id": "content-1752092930273",
+              "type": "embed",
+              "title": "",
+              "text": "",
+              "alignment": "center",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #00bcd4;\">🌌 Planetas Iniciales</h2>\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    Cada planeta disponible en StellarMarch tiene una identidad propia. Biomas hostiles, climas extremos y entornos desafiantes te esperan. \n    Escoge con sabiduría: será tu hogar y tu campo de batalla.\n  </p>\n\n  <div style=\"margin-top: 30px;\">\n    <h3 style=\"color: #66d9ef;\">❄️ Tundrax</h3>\n    <p style=\"line-height: 1.6;\">Un planeta completamente nevado. Frío, cruel y hermoso. La vida aquí es dura, y solo los más adaptables logran sobrevivir. Ideal para jugadores que disfrutan el reto constante y la escasez de recursos.</p>\n\n    <h3 style=\"color: #a6e22e;\">🌊 Zoriath</h3>\n    <p style=\"line-height: 1.6;\">Un archipiélago inmenso lleno de islas flotando sobre un mar brillante. La movilidad y el control del terreno son clave. Requiere pensamiento estratégico y habilidades navales.</p>\n\n    <h3 style=\"color: #ffb86c;\">🌿 Edetian</h3>\n    <p style=\"line-height: 1.6;\">Una selva densa, vibrante y llena de vida. Rebosante de recursos naturales, pero también plagada de amenazas ocultas entre los árboles. Perfecto para jugadores constructores y exploradores.</p>\n\n    <h3 style=\"color: #ff5555;\">🔥 Arkan</h3>\n    <p style=\"line-height: 1.6;\">Un planeta árido tipo sabana. Tierra rojiza, aire seco, tecnología en decadencia. La supervivencia depende de la organización y la conquista. Es un entorno agresivo, para jugadores que buscan dominar.</p>\n  </div>\n\n  <p style=\"line-height: 1.6; font-style: italic; color: #cccccc; margin-top: 30px;\">\n    🌍 No hay planeta fácil. Cada uno tiene su historia… y tú estás a punto de escribir la tuya.\n  </p>\n</div>"
+            },
+            {
+              "id": "content-1752093406979",
+              "type": "embed",
+              "title": "",
+              "text": "",
+              "alignment": "center",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif'; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #00bcd4;\">🏛️ Naciones y Comunidad</h2>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    En <strong>StellarMarch</strong>, <span style=\"color:#00ffcc;\"><strong>jugar en grupo</strong></span> no solo es más divertido, sino también más efectivo. Las naciones están diseñadas para ofrecer una experiencia profunda, estratégica y social, donde cada jugador cumple un rol clave en el desarrollo colectivo.\n  </p>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    El servidor está completamente adaptado para que todos los jugadores vivan una <strong>experiencia de nación única</strong>. Desde las estructuras políticas hasta la cooperación militar y científica, cada nación es un organismo vivo con sus propias historias y objetivos.\n  </p>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    ¿Quieres unirte a una nación ya existente o fundar la tuya con amigos? Puedes hacerlo a través de nuestro servidor de Discord:\n    <a href=\"https://discord.gg/rDAsXTwf35\" style=\"color: #00ffff; text-decoration: underline;\">https://discord.gg/rDAsXTwf35</a>\n  </p>\n\n  <p style=\"line-height: 1.6; font-style: italic; color: #cccccc;\">\n    🌐 Las naciones se explican mas a fondo en su propio apartado\n  </p>\n</div>"
+            }
+          ]
+        },
+        {
+          "id": "subpage-1752093617180",
+          "title": "Supervivencia",
+          "content": [
+            {
+              "id": "content-1752093627172",
+              "type": "embed",
+              "title": "Sobreviviendo ",
+              "text": "",
+              "alignment": "left",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: auto; padding: 20px; color: #ffffff;\">\n  <h2 style=\"color: #00bcd4;\">🌱 Trucos de Supervivencia y Tu Primera Aventura</h2>\n\n  <p style=\"line-height: 1.6; font-size: 1.05em;\">\n    En StellarMarch, la supervivencia es el primer paso para conquistar el universo. Aquí te damos algunos consejos esenciales para iniciar tu aventura con buen pie.\n  </p>\n\n  <h3 style=\"color: #66d9ef;\">1. Comienza con lo básico</h3>\n  <p style=\"line-height: 1.6;\">\n    Lo primero es encontrar un árbol y talarlo. Con él podrás fabricar herramientas básicas como el pico y el hacha, indispensables para recolectar recursos y defenderte.\n  </p>\n\n  <h3 style=\"color: #66d9ef;\">2. Armamento personalizado</h3>\n  <p style=\"line-height: 1.6;\">\n    El armamento en StellarMarch es completamente customizado y depende del nivel tecnológico y las posibilidades de tu nación. Por eso, para poder armarte, primero debes pertenecer a una nación.\n  </p>\n\n  <h3 style=\"color: #66d9ef;\">3. Consigue recursos y animales</h3>\n  <p style=\"line-height: 1.6;\">\n    Consigue todo lo necesario para sobrevivir y prosperar. Por el mundo encontrarás ganado importado y animales salvajes que te serán útiles:\n  </p>\n\n  <ul style=\"line-height: 1.6; color: #ffffff;\">\n    <li><strong>Cerdo, vaca, oveja y caballo:</strong> Animales importados de la Tierra hace más de 400 años, presentes en todos los mundos.</li>\n  </ul>\n\n  <h3 style=\"color: #66d9ef;\">Fauna específica de cada planeta:</h3>\n  <ul style=\"line-height: 1.6; color: #ffffff;\">\n    <li><strong>Tundrax:</strong> Oslot de las nieves, una criatura adaptada al frío extremo.</li>\n    <li><strong>Edetian:</strong> Los enanos del bosque, seres pequeños y resistentes de la jungla.</li>\n    <li><strong>Zoriath:</strong> El gran calamar, criatura marina dominante en el archipiélago.</li>\n    <li><strong>Arkan:</strong> Camellos, importados de la Tierra para transporte en las primeras etapas de colonización.</li>\n  </ul>\n\n  <p style=\"line-height: 1.6; font-style: italic; color: #cccccc;\">\n    El resto de la fauna aún no ha sido descubierta o se encuentra aislada en lugares remotos de la galaxia, esperando a ser explorada por valientes colonizadores.\n  </p>\n</div>"
+            },
+            {
+              "id": "content-1752094127382",
+              "type": "embed",
+              "title": "ARMAS",
+              "text": "",
+              "alignment": "center",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 700px; margin: auto; padding: 20px; color: #ffffff;\">\n\n  <h2 style=\"color: #00bcd4; text-align: center;\">🔫 Mosquete</h2>\n  \n  <div style=\"text-align: center; margin-bottom: 20px;\">\n    <iframe \n      src=\"https://archive.org/embed/minecraft-1.20.1-multiplayer-3rd-party-server-2025-07-09-14-59-38\" \n      width=\"560\" \n      height=\"384\" \n      frameborder=\"0\" \n      webkitallowfullscreen=\"true\" \n      mozallowfullscreen=\"true\" \n      allowfullscreen\n      style=\"max-width: 100%; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);\">\n    </iframe>\n  </div>\n\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Daño:</strong> 5\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Recarga:</strong> 10 segundos\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Habilidad especial:</strong> <em>Ensamblaje de bayoneta.</em> Puedes ensamblar una bayoneta mientras recargas. El ensamblaje toma 5 segundos y al terminar tendrás un arma con 3 de daño por golpe PvP, además de los efectos de <span style=\"color:#00ff99;\">velocidad</span> y <span style=\"color:#00ff99;\">regeneración</span>.\n  </p>\n\n</div>"
+            },
+            {
+              "id": "content-1752096507686",
+              "type": "embed",
+              "title": "",
+              "text": "",
+              "alignment": "left",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 700px; margin: auto; padding: 20px; color: #ffffff;\">\n\n  <h2 style=\"color: #ff5555; text-align: center;\">💥 Trabuco</h2>\n\n  <div style=\"text-align: center; margin-bottom: 20px;\">\n    <iframe \n      src=\"https://archive.org/embed/minecraft-1.20.1-multiplayer-3rd-party-server-2025-07-09-15-27-32\" \n      width=\"560\" \n      height=\"384\" \n      frameborder=\"0\" \n      webkitallowfullscreen=\"true\" \n      mozallowfullscreen=\"true\" \n      allowfullscreen\n      style=\"max-width: 100%; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 85, 85, 0.4);\">\n    </iframe>\n  </div>\n\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Daño:</strong> 5 por bala\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Dispersión:</strong> Rango de 1 a 5 bloques\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Alcance:</strong> Bajo\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Recarga:</strong> 10 segundos\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Munición utilizada:</strong> 4 unidades por disparo\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Habilidad:</strong> <em>Disparo en ráfaga</em>. Lanza 8 balas en distintas direcciones. Si logras conectar todas las balas en un solo objetivo, es un <span style=\"color:#ff9999;\"><strong>instakill asegurado</strong></span>.\n  </p>\n\n</div>"
+            },
+            {
+              "id": "content-1752096901639",
+              "type": "embed",
+              "title": "",
+              "text": "",
+              "alignment": "left",
+              "embedCode": "<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 700px; margin: auto; padding: 20px; color: #ffffff;\">\n\n  <h2 style=\"color: #ffaa00; text-align: center;\">🔥 Pistola de Mecha</h2>\n\n  <div style=\"text-align: center; margin-bottom: 20px;\">\n    <iframe \n      src=\"https://archive.org/embed/minecraft-1.20.1-multiplayer-3rd-party-server-2025-07-09-15-33-37\" \n      width=\"560\" \n      height=\"384\" \n      frameborder=\"0\" \n      webkitallowfullscreen=\"true\" \n      mozallowfullscreen=\"true\" \n      allowfullscreen\n      style=\"max-width: 100%; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);\">\n    </iframe>\n  </div>\n\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Daño:</strong> 4\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Recarga:</strong> 4 segundos\n  </p>\n  <p style=\"font-size: 1.1em; line-height: 1.6;\">\n    <strong>Habilidades:</strong> Capaz de utilizar distintos <strong>tipos de munición</strong>, lo que la hace versátil en combate. Su disparo base es <span style=\"color:#ff6600;\"><strong>incendiario</strong></span>, ideal para causar quemaduras y caos en áreas cerradas.\n  </p>\n\n</div>"
+            }
+          ]
+        }
+      ]
     }
   ],
   "currentPage": "page-1752091720691",
-  "currentSubpage": null
+  "currentSubpage": "subpage-1752093617180"
 }
