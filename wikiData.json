@@ -2,27 +2,27 @@
   "pages": {
     "home": {
       "title": "Introduccion",
-      "content": null,
+      "content": "<h2>En Desarrollo</h2>",
       "subpages": []
     },
     "technology": {
       "title": "Tutoriales",
-      "content": null,
+      "content": "<h2>EN DESAROLLO</h2>",
       "subpages": []
     },
     "exploration": {
       "title": "Mapa",
-      "content": null,
+      "content": "<h2>EN DESAROLLO</h2>",
       "subpages": []
     },
     "species": {
       "title": "Historia y Lore",
-      "content": null,
+      "content": "<h2>EN DESAROLLO</h2>",
       "subpages": []
     },
     "history": {
       "title": "Servidor",
-      "content": null,
+      "content": "<h2>EN DESAROLLO</h2>",
       "subpages": []
     }
   }
