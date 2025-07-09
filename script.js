@@ -1,6 +1,35 @@
 // Codex Astralis - Script Principal
 
-document.addEventListener('DOMContentLoaded', function() {
+// Configuración de credenciales de editor
+const editorCredentials = {
+    username: 'Editor',
+    password: '06.23.08'
+};
+
+// Variables globales para datos y autenticación
+let defaultData = null;
+let tempData = null;
+let isAuthenticated = false;
+
+// Esperar a que el DOM esté listo y cargar datos JSON
+async function startApp() {
+    // Cargar datos desde wikiData.json
+    try {
+        const response = await fetch('wikiData.json');
+        if (!response.ok) throw new Error('No se pudo cargar wikiData.json');
+        defaultData = await response.json();
+        tempData = JSON.parse(JSON.stringify(defaultData));
+        document.dispatchEvent(new Event('wikiDataLoaded'));
+    } catch (e) {
+        alert('Error cargando datos: ' + e.message);
+        defaultData = { pages: [], currentPage: null, currentSubpage: null };
+        tempData = JSON.parse(JSON.stringify(defaultData));
+    }
+}
+
+startApp();
+
+document.addEventListener('wikiDataLoaded', function() {
     // Elementos del DOM
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
