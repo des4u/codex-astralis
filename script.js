@@ -51,6 +51,14 @@ document.addEventListener('wikiDataLoaded', function() {
     const saveContentBtn = document.getElementById('save-content');
     const cancelEditBtn = document.getElementById('cancel-edit');
     
+    // Botón para descargar JSON puro
+    const downloadPureJsonBtn = document.createElement('button');
+    downloadPureJsonBtn.id = 'download-pure-json-btn';
+    downloadPureJsonBtn.className = 'btn btn-info';
+    downloadPureJsonBtn.textContent = 'Descargar JSON puro';
+    downloadPureJsonBtn.style.marginLeft = '10px';
+    downloadJsonBtn.parentNode.insertBefore(downloadPureJsonBtn, downloadJsonBtn.nextSibling);
+
     // Variables para edición
     let currentEditingItem = null;
     let currentEditingPage = null;
@@ -77,6 +85,7 @@ document.addEventListener('wikiDataLoaded', function() {
         addSubpageBtn.addEventListener('click', addNewSubpage);
         saveChangesBtn.addEventListener('click', saveChanges);
         downloadJsonBtn.addEventListener('click', downloadJson);
+        downloadPureJsonBtn.addEventListener('click', downloadPureJson);
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
         
@@ -413,6 +422,20 @@ let isAuthenticated = false;`;
         URL.revokeObjectURL(url);
         
         alert('Archivo data.js descargado. Reemplaza el archivo existente para hacer los cambios permanentes.');
+    }
+
+    function downloadPureJson() {
+        const dataStr = JSON.stringify(tempData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'wikiData.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert('Archivo wikiData.json descargado. Reemplaza el archivo en el repositorio para aplicar los cambios.');
     }
 
     // Función para eliminar contenido (bonus)
