@@ -52,12 +52,12 @@ document.addEventListener('wikiDataLoaded', function() {
     const cancelEditBtn = document.getElementById('cancel-edit');
     
     // Botón para descargar JSON puro
-    const downloadPureJsonBtn = document.createElement('button');
-    downloadPureJsonBtn.id = 'download-pure-json-btn';
-    downloadPureJsonBtn.className = 'btn btn-info';
-    downloadPureJsonBtn.textContent = 'Descargar JSON puro';
-    downloadPureJsonBtn.style.marginLeft = '10px';
-    downloadJsonBtn.parentNode.insertBefore(downloadPureJsonBtn, downloadJsonBtn.nextSibling);
+    // const downloadPureJsonBtn = document.createElement('button');
+    // downloadPureJsonBtn.id = 'download-pure-json-btn';
+    // downloadPureJsonBtn.className = 'btn btn-info';
+    // downloadPureJsonBtn.textContent = 'Descargar JSON puro';
+    // downloadPureJsonBtn.style.marginLeft = '10px';
+    // downloadJsonBtn.parentNode.insertBefore(downloadPureJsonBtn, downloadJsonBtn.nextSibling);
 
     // Variables para edición
     let currentEditingItem = null;
@@ -85,7 +85,7 @@ document.addEventListener('wikiDataLoaded', function() {
         addSubpageBtn.addEventListener('click', addNewSubpage);
         saveChangesBtn.addEventListener('click', saveChanges);
         downloadJsonBtn.addEventListener('click', downloadPureJson); // Cambiado para descargar JSON puro
-        downloadPureJsonBtn.addEventListener('click', downloadJson); // Ahora este descarga el JS
+        // downloadPureJsonBtn.addEventListener('click', downloadJson); // Ahora este descarga el JS
         saveContentBtn.addEventListener('click', saveContent);
         cancelEditBtn.addEventListener('click', () => contentModal.style.display = 'none');
         
@@ -200,7 +200,11 @@ document.addEventListener('wikiDataLoaded', function() {
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'content-item';
                 contentDiv.id = item.id;
-                
+                // Corregir alineación
+                contentDiv.classList.remove('text-left', 'text-center', 'text-right');
+                if (item.alignment) {
+                    contentDiv.classList.add(`text-${item.alignment}`);
+                }
                 if (isAuthenticated) {
                     contentDiv.classList.add('editable');
                     const editBtn = document.createElement('button');
@@ -209,22 +213,16 @@ document.addEventListener('wikiDataLoaded', function() {
                     editBtn.addEventListener('click', () => editContent(item));
                     contentDiv.appendChild(editBtn);
                 }
-
                 if (item.type === 'text') {
                     if (item.title) {
                         const titleEl = document.createElement('h3');
                         titleEl.textContent = item.title;
                         contentDiv.appendChild(titleEl);
                     }
-                    
                     if (item.text) {
                         const textEl = document.createElement('p');
                         textEl.textContent = item.text;
                         contentDiv.appendChild(textEl);
-                    }
-                    
-                    if (item.alignment) {
-                        contentDiv.classList.add(`text-${item.alignment}`);
                     }
                 } else if (item.type === 'embed') {
                     if (item.title) {
@@ -232,18 +230,12 @@ document.addEventListener('wikiDataLoaded', function() {
                         titleEl.textContent = item.title;
                         contentDiv.appendChild(titleEl);
                     }
-                    
                     if (item.embedCode) {
                         const embedDiv = document.createElement('div');
                         embedDiv.innerHTML = item.embedCode;
                         contentDiv.appendChild(embedDiv);
                     }
-                    
-                    if (item.alignment) {
-                        contentDiv.classList.add(`text-${item.alignment}`);
-                    }
                 }
-
                 pageContent.appendChild(contentDiv);
             });
         } else {
@@ -252,16 +244,14 @@ document.addEventListener('wikiDataLoaded', function() {
             emptyMsg.textContent = 'Esta página está vacía. ';
             emptyMsg.style.textAlign = 'center';
             emptyMsg.style.color = '#666';
-            
             if (isAuthenticated) {
                 emptyMsg.innerHTML += '<br><br>';
                 const addBtn = document.createElement('button');
                 addBtn.textContent = 'Agregar Contenido';
                 addBtn.className = 'btn btn-primary';
-                addBtn.addEventListener('click', () => addNewContent());
+                addBtn.addEventListener('click', addNewContent); // Corregido: referencia directa
                 emptyMsg.appendChild(addBtn);
             }
-            
             pageContent.appendChild(emptyMsg);
         }
     }
@@ -309,29 +299,26 @@ document.addEventListener('wikiDataLoaded', function() {
         const text = document.getElementById('content-text').value;
         const alignment = document.getElementById('content-alignment').value;
         const embedCode = document.getElementById('embed-code').value.trim();
-        
         if (!title && !text && !embedCode) {
             alert('Debe agregar al menos un título, texto o código embed');
             return;
         }
-        
         // Determinar el tipo de contenido
         const contentType = embedCode ? 'embed' : 'text';
-        
         // Actualizar el item
         currentEditingItem.type = contentType;
         currentEditingItem.title = title;
-        currentEditingItem.text = text;
-        currentEditingItem.alignment = alignment;
-        
+        currentEditingItem.alignment = alignment; // Corregido: guardar alineación siempre
         if (contentType === 'embed') {
             currentEditingItem.embedCode = embedCode;
+            currentEditingItem.text = '';
+        } else {
+            currentEditingItem.text = text;
+            currentEditingItem.embedCode = '';
         }
-        
         // Cerrar modal y re-renderizar
         contentModal.style.display = 'none';
         renderCurrentPage();
-        
         // Limpiar variables
         currentEditingItem = null;
         currentEditingPage = null;

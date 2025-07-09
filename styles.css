@@ -15,6 +15,12 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1 0 auto;
 }
 
 /* Estrellas animadas */
@@ -521,8 +527,14 @@ body {
     font-family: 'Cormorant Garamond', serif;
     border-top: 2px solid #d4af37;
     box-shadow: 0 -2px 20px rgba(212, 175, 55, 0.1);
-    position: relative;
+    position: sticky;
+    bottom: 0;
+    left: 0;
     z-index: 1001;
+}
+
+.site-footer {
+    flex-shrink: 0;
 }
 
 /* Responsive */
